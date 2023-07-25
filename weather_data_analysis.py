@@ -1,9 +1,12 @@
+import os
+from dotenv import load_dotenv
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-API_KEY = "5ac3473587856d05d696ba5626cfd409"
+load_dotenv()
+API_KEY = os.environ.get('OPENWEATHER_API_KEY')
 API_ENDPOINT = "https://api.openweathermap.org/data/2.5/forecast"
 CITY_ID = "5128581"  # New York, US
 
@@ -23,7 +26,7 @@ def clean_data(raw_data):
     for entry in raw_data.get('list', []):
         weather_data.append({
             'time': entry['dt'],
-            'temperature': entry['main']['temp'] - 273.15,  # Kelvin to Celsius
+            'temperature': entry['main']['temp'] - 273.15,
             'humidity': entry['main']['humidity']
         })
     if not weather_data:
