@@ -4,15 +4,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 API_KEY = "5ac3473587856d05d696ba5626cfd409"
-API_ENDPOINT = "https://history.openweathermap.org/data/2.5/history/city"
-CITY_ID = "5128581"  # Replace with an actual city ID
+API_ENDPOINT = "https://api.openweathermap.org/data/2.5/forecast"
+CITY_ID = "5128581"  # New York, US
 
-def fetch_weather_data(city_id, start, end):
+def fetch_weather_data(city_id):
     params = {
         'id': city_id,
-        'type': 'hour',
-        'start': start,
-        'end': end,
         'appid': API_KEY
     }
     response = requests.get(API_ENDPOINT, params=params)
@@ -26,7 +23,7 @@ def clean_data(raw_data):
     for entry in raw_data.get('list', []):
         weather_data.append({
             'time': entry['dt'],
-            'temperature': entry['main']['temp'] - 273.15,
+            'temperature': entry['main']['temp'] - 273.15,  # Kelvin to Celsius
             'humidity': entry['main']['humidity']
         })
     if not weather_data:
@@ -49,11 +46,7 @@ def plot_temperature_trends(df):
     plt.show()
 
 def main():
-    import time
-    end_time = int(time.time())
-    start_time = end_time - 30 * 24 * 60 * 60  # 30 days ago
-
-    raw_data = fetch_weather_data(CITY_ID, start_time, end_time)
+    raw_data = fetch_weather_data(CITY_ID)
     df = clean_data(raw_data)
     plot_temperature_trends(df)
 
